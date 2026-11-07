@@ -1,0 +1,75 @@
+.skeleton-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton-poster {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  background-color: var(--color-bg-secondary);
+}
+
+.skeleton-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton-line {
+  height: 14px;
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-sm);
+}
+
+.skeleton-line--tag {
+  width: 35%;
+  height: 12px;
+}
+
+.skeleton-line--title {
+  width: 75%;
+  height: 20px;
+}
+
+.skeleton-line--subtitle {
+  width: 50%;
+  height: 12px;
+}
+
+.skeleton-line--text {
+  width: 100%;
+  height: 12px;
+}
+
+.skeleton-button {
+  height: 38px;
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  margin-top: 12px;
+}
+
+/* Shimmer animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite ease-in-out;
+}
