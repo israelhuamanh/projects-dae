@@ -4,4 +4,5 @@ Repositorio para los laboratorios y proyectos del curso de Desarrollo de Aplicac
 
 ## Estructura del Repositorio
 
-- `semana-8/`: Laboratorio y proyecto correspondiente a la Semana 8 (continuación de la Semana 7).
+- `semana-8/`: Laboratorio N° 08 — Implementación de Servicios Web con Django REST Framework (API RESTful headless).
+- `semana-9/`: Laboratorio N° 09 — Desarrollo y actividades correspondientes a la Semana 9.
