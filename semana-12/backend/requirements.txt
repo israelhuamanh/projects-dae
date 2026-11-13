@@ -1,0 +1,6 @@
+Django>=5.2,<7
+djangorestframework>=3.16
+drf-spectacular>=0.28
+requests>=2.32
+django-filter>=25
+django-cors-headers>=4.7
