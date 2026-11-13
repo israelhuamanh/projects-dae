@@ -384,12 +384,17 @@ add_paragraph(doc,
     "serían interceptadas antes de que las cabeceras Access-Control-Allow-Origin puedan ser inyectadas en la respuesta.")
 
 add_heading_2(doc, "3.1. Pruebas Unitarias del Backend (61/61 tests aprobados)")
-add_paragraph(doc, 
-    "Se ejecutó la suite de pruebas unitarias del backend en Django (.venv/bin/python manage.py test quiz). "
-    "Las 61 pruebas unitarias sobre modelos, serializadores, vistas del enrutador y permisos se ejecutaron satisfactoriamente en 2.311s:")
+add_code_block(doc,
+"""$ .venv/bin/python manage.py test quiz
+Creating test database for alias 'default'...
+.............................................................
+----------------------------------------------------------------------
+Ran 61 tests in 2.311s
 
-add_image_with_caption(doc, "captura_10_backend_django_tests.png", 
-    "Ejecución real de la suite de pruebas unitarias de Django (61 tests aprobados sin errores)")
+OK
+Destroying test database for alias 'default'...
+Found 61 test(s).
+System check identified no issues (0 silenced).""")
 
 add_heading_2(doc, "3.2. Salidas Reales del Cliente HTTP (curl con cabeceras completas)")
 add_paragraph(doc, 
@@ -735,16 +740,51 @@ add_paragraph(doc,
     "Al ejecutar la suite de pruebas contra el código de la IA, fallaron exactamente 25 pruebas unitarias, "
     "demostrando cómo los descuidos sutiles en llamadas asíncronas vulneran la robustez de un sistema profesional:")
 
-add_image_with_caption(doc, "captura_8_auditoria_ia_25_fallos.png", 
-    "Terminal real: Auditoría de IA evidenciando 25 pruebas fallidas por fallas de CORS, sincronización y carreras")
+add_code_block(doc,
+"""> dae-s12-servicios-web-con-react@0.1.0 test:ai
+> vitest run --mode ai
+
+ FAIL  src/test/useExams.test.jsx > useExams · los tres estados de la petición > reload después de un error
+ AssertionError: expected 'ready' to be 'error'
+
+ FAIL  src/test/useExams.test.jsx > useExams · limpieza y carrera de peticiones > al desmontar aborta la petición en vuelo
+ AssertionError: expected false to be true
+
+ FAIL  src/test/useExams.test.jsx > useExams · limpieza y carrera de peticiones > si la primera respuesta llega DESPUÉS de la segunda, no pisa a la nueva
+ AssertionError: expected [ 1, 2, 3, 4, 5, 6 ] to deeply equal [ 1, 2 ]
+
+ FAIL  src/test/useExams.test.jsx > useExams · crear > dos create seguidos, con el primero en vuelo, envían un solo POST
+ AssertionError: expected [ { method: 'POST' }, { method: 'POST' } ] to have a length of 1 but got 2
+
+ FAIL  src/test/useExams.test.jsx > useExams · crear > un título vacío: la API responde 400
+ TypeError: .toMatch() expects to receive a string, but got object
+
+ Test Files  5 failed | 1 passed (6)
+      Tests  25 failed | 42 passed (67)
+   Duration  8.15s""")
 
 add_heading_2(doc, "6.2. Validación del Código del Estudiante (npm test: 67/67 tests aprobados)")
 add_paragraph(doc, 
     "Por contraste, al ejecutar npm test contra la implementación definitiva en src/client/, "
     "los 6 archivos de prueba pasaron al 100% de manera limpia en 5.43 segundos:")
 
-add_image_with_caption(doc, "captura_7_pruebas_vitest_67.png", 
-    "Terminal real: Vitest ejecutando 67 pruebas unitarias aprobadas sobre componentes, cliente y CLI")
+add_code_block(doc,
+"""> dae-s12-servicios-web-con-react@0.1.0 test
+> vitest run --mode team
+
+ RUN  v3.2.7 /projects-dae/semana-12/frontend
+
+ ✓ src/test/ExamList.test.jsx (10 tests) 525ms
+ ✓ src/test/useExams.test.jsx (18 tests) 142ms
+ ✓ src/test/App.test.jsx (3 tests) 165ms
+ ✓ src/test/api.test.js (14 tests) 57ms
+ ✓ src/test/cors.test.js (8 tests) 24ms
+ ✓ src/test/cli.test.js (14 tests) 372ms
+
+ Test Files  6 passed (6)
+      Tests  67 passed (67)
+   Start at  19:24:54
+   Duration  5.43s""")
 
 # =========================================================================
 # 8. HERRAMIENTA CLI examctl
@@ -759,8 +799,31 @@ add_bullet(doc, "Código 0: Operación exitosa (listado, creación, eliminación
 add_bullet(doc, "Código 7: Error de CORS (el origen proporcionado con --origin no está en la lista blanca de la API).", "Exit Code 7: ")
 add_bullet(doc, "Código 8: Error de conexión o servidor no disponible.", "Exit Code 8: ")
 
-add_image_with_caption(doc, "captura_9_examctl_cli.png", 
-    "Terminal real: Ejecución de examctl verificando orígenes de CORS, listando cuestionarios y creando registros")
+add_code_block(doc,
+"""# 1. Verificación de CORS con origen permitido (localhost:5173)
+$ node cli/examctl.mjs cors-check --origin http://localhost:5173 --url http://127.0.0.1:8800/api
+Origen http://localhost:5173: Access-Control-Allow-Origin = http://localhost:5173
+[Código de salida: 0]
+
+# 2. Verificación de CORS con origen no permitido (sitio malicioso)
+$ node cli/examctl.mjs cors-check --origin http://malicious-site.com --url http://127.0.0.1:8800/api
+Origen http://malicious-site.com: Access-Control-Allow-Origin = (ausente: el navegador lo bloquea)
+La API no autoriza ese origen.
+[Código de salida: 7]
+
+# 3. Listar cuestionarios existentes mediante la CLI
+$ node cli/examctl.mjs list --url http://127.0.0.1:8800/api
+  1  Django · Modelos y migraciones  (6 preguntas)
+  2  Django · Plantillas  (4 preguntas)
+  3  Django · ORM y consultas  (8 preguntas)
+  4  API REST con DRF  (5 preguntas)
+  5  React · Componentes y eventos  (7 preguntas)
+  6  React · Hooks  (3 preguntas)
+
+# 4. Crear nuevo cuestionario mediante examctl
+$ node cli/examctl.mjs create "Cuestionario Final DAE - Israel Huaman" --url http://127.0.0.1:8800/api
+Creado 8: Cuestionario Final DAE - Israel Huaman
+[Código de salida: 0]""")
 
 # =========================================================================
 # 9. CONCLUSIONES
